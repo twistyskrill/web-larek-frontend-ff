@@ -1,43 +1,105 @@
 import { ICard } from "../../types";
+import { CDN_URL } from "../../utils/constants";
 import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
 import { IEvents } from "../base/events";
 
-export class Card extends Component<ICard> {
-  protected title?: HTMLElement;
-  protected image?: HTMLImageElement;
-  protected category?: HTMLElement;
-  protected description?: HTMLElement;
-  protected price?: HTMLElement;
-  protected button?: HTMLButtonElement;
+interface IBaseCard extends ICard {
+  buttonDisabled?: boolean;
+}
 
-  constructor(container: HTMLElement, events: IEvents) {
+export class Card extends Component<IBaseCard> {
+  protected _title?: HTMLElement;
+  protected _image?: HTMLImageElement;
+  protected _category?: HTMLElement;
+  protected _description?: HTMLElement;
+  protected _price?: HTMLElement;
+  protected _button?: HTMLButtonElement;
+  protected _id?: string;
+
+  protected categoryColor:  Record<string, string> = {
+		'софт-скил': 'card__category_soft',
+		'хард-скил': 'card__category_hard',
+		'дополнительное': 'card__category_additional',
+		'другое': 'card__category_other',
+		'кнопка': 'card__category_button',
+  }
+
+  constructor(container: HTMLElement, events: IEvents, protected buttonIsDisabled?: boolean) {
     super(container);
-    this.title = ensureElement('.card__title', this.container);
-    this.image = ensureElement('.card__image', this.container) as HTMLImageElement;
-    this.category = ensureElement('.card__category', this.container);
-    this.description = this.container.querySelector('.card__text');
-    this.price = ensureElement('.card__price', this.container);
-    this.button = this.container.querySelector('.gallery__item') as HTMLButtonElement;
+    this._title = ensureElement('.card__title', this.container);
+    this._image = this.container.querySelector('.card__image') as HTMLImageElement;
+    this._category = this.container.querySelector('.card__category');
+    this._description = this.container.querySelector('.card__text');
+    this._price = ensureElement('.card__price', this.container);
+    this._button = this.container.querySelector('button') as HTMLButtonElement;
+
+
+    if (this.container.classList.contains('gallery__item')) {
+      this.container.addEventListener('click', () => {
+        events.emit('card:open', {id: this._id});
+      })
+    }
+
+    if (this.container.classList.contains('card_full')) {
+       this._button.addEventListener('click', () => {
+        if (this._price.textContent !== 'Бесценно') {
+          events.emit('basket:add', {id: this._id});
+          this.setBasketState(true);
+        }
+      })
+    }
+
+    if (this.container.classList.contains('basket__item')) {
+       this._button.addEventListener('click', () => {
+        events.emit('basket:remove', {id: this._id});
+        events.emit('basket:open')
+      })
+    }
+  }
+  set title(value: string) {
+    this.setText(this._title, value);
   }
 
-  set Title(value: string) {
-    this.setText(this.title, value);
+  set image(value: string) {
+    this.setImage(this._image, CDN_URL + value);
   }
 
-  set Image(value: string) {
-    this.setImage(this.image, value);
+  set category(value: string) {
+    this.setText(this._category, value);
+    if (this._category) {
+    this.toggleClass(this._category, this.categoryColor[value], true)
+    }
   }
 
-  set Category(value: string) {
-    this.setText(this.category, value);
+  set description(value: string) {
+    this.setText(this._description, value);
   }
 
-  set Description(value: string) {
-    this.setText(this.description, value);
+  private setBasketState(isInBasket: boolean) {
+    if (this._price.textContent === 'Бесценно') {
+      this.setDisabled(this._button, true);
+      this.setText(this._button, 'Нельзя купить');
+    } else {
+      this.setDisabled(this._button, isInBasket);
+      this.setText(this._button, isInBasket ? 'Уже в корзине' : 'В корзину');
+    }
   }
 
-  set Price(value: string) {
-    this.setText(this.price, value)
+  set price(value: number | null) {
+    if (value == null) {
+      this.setText(this._price, 'Бесценно');
+      this.setBasketState(false); 
+    } else {
+      this.setText(this._price, value + ' синапсов');
+    }
+  }
+
+  set id(value: string) {
+    this._id = value;
+  }
+
+  set buttonDisabled(value: boolean) {
+    this.setBasketState(value);
   }
 }
