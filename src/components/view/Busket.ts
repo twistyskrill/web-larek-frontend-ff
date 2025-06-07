@@ -36,10 +36,8 @@ export class Basket extends Component<IBasket> {
 
   set totalPrice(price: number) {
     this.setText(this._totalPrice, price + ' синапсов')
-    //для данила
     if (price <= 0) {
         this.setDisabled(this._orderButton, true)
     }
-    //
   }
 }

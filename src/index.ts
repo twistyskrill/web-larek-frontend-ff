@@ -36,7 +36,6 @@ const orderSuccess = new Success(cloneTemplate(successTemp), events)
 api.getCards()
   .then(cards => {
     catalog.setCatalog(cards.items)
-    // console.log(catalog.getCatalog())
   })
   .catch(err => console.error(err))
 
@@ -69,7 +68,6 @@ events.on('modal:close', () => {
 
 events.on('basket:open', () => {
   const cardInBasket = basket.getItems()
-  console.log(cardInBasket)
   const totalPrice = basket.getTotalPrice()
   const cardBasketListHTML = cardInBasket.map(item => new Card(cloneTemplate(cardInBasketTemp), events).render(item))
   const busketHTML = new Basket(cloneTemplate(basketTemp), events).render({
@@ -142,7 +140,6 @@ events.on('contacts:submit', () => {
 
   basket.clearBasket();
   page.render({ counter: 0 }); 
-  console.log(user.getOrderData())
 
   api.sendOrder(user.getOrderData())
     .then(() => user.resetOrder())
@@ -150,5 +147,4 @@ events.on('contacts:submit', () => {
 
 events.on('success:submit', () => {
   modal.closePopup()
-  console.log(user.getOrderData())
 })

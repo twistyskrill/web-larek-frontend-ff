@@ -34,7 +34,6 @@ export class Card extends Component<IBaseCard> {
     this._price = ensureElement('.card__price', this.container);
     this._button = this.container.querySelector('button') as HTMLButtonElement;
 
-
     if (this.container.classList.contains('gallery__item')) {
       this.container.addEventListener('click', () => {
         events.emit('card:open', {id: this._id});

@@ -34,6 +34,6 @@ export class UserDataModel {
 
   validate(fields: (keyof IForm)[]): boolean {
     return fields.every(field => !!this.orderData[field]);
-}
+  }
 
 }

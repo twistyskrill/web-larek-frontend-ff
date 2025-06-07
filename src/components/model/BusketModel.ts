@@ -2,44 +2,39 @@ import { ICard } from "../../types";
 import { IEvents } from "../base/events";
 
 export class BasketModel {
-  items: ICard[] = [];
-  total: number;
-  itemsId: string[] = []
+  protected _items: ICard[] = [];
+  protected _total: number;
+  protected _itemsId: string[] = []
   
-  constructor(events: IEvents) {}
+  constructor(protected events: IEvents) {}
 
   addItems(card: ICard) {
-    this.items.push(card);
+    this._items.push(card);
   }
 
   removeItem(cardId: string) {
-    this.items = this.items.filter(item => item.id !== cardId);
+    this._items = this._items.filter(item => item.id !== cardId);
   }
 
   getItems(): ICard[] {
-    return this.items;
+    return this._items;
   }
 
   getItemsId(): string[] {
-    this.items.forEach((item) => {
-      this.itemsId.push(item.id)
+    this._items.forEach((item) => {
+      this._itemsId.push(item.id)
     })
-    return this.itemsId
+    return this._itemsId
   }
 
   getTotalPrice(): number {
-    return this.items.reduce((acc, item) => acc + item.price, 0);
+    return this._items.reduce((acc, item) => acc + item.price, 0);
   }
 
   clearBasket() {
-    this.items = [];
+    this._items = [];
   }
-
-  isEmpty(): boolean {
-    return this.items ? false : true;
-  }
-
   getTotalEmount(): number {
-    return this.items.length
+    return this._items.length
   }
 }

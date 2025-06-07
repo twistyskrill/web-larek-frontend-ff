@@ -4,7 +4,7 @@ export interface ICard {
   image: string,
   title: string,
   category: string,
-  price: number
+  price: number,
 }
 
 export interface IForm {
