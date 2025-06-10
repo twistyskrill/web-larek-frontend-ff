@@ -1,12 +1,9 @@
-import { ICard } from "../../types";
+import { ICard, IPopup } from "../../types";
 import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
 import { IEvents } from "../base/events";
 
-interface IPopup {
-    closeButton?: HTMLButtonElement;
-    content: HTMLElement;
-}
+
 
 export class Popup extends Component<IPopup> {
 

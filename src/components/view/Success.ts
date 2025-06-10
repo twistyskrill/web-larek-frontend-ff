@@ -1,12 +1,8 @@
+import { ISuccess } from "../../types";
 import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
 import { IEvents } from "../base/events";
 
-
-interface ISuccess {
-    total: HTMLElement,
-    close: HTMLButtonElement
-}
 
 export class Success extends Component<ISuccess> {
 

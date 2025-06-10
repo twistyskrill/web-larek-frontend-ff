@@ -13,23 +13,30 @@ import { Payment } from './components/view/Payment';
 import { UserDataModel } from './components/model/UserDataModel';
 import { Contacts } from './components/view/Contacts';
 import { Success } from './components/view/Success';
+import { TPaymentMethod } from './types';
 
-const events = new EventEmitter()
+const events = new EventEmitter();
 const api = new AppApi(API_URL);
+
 const catalog = new CatalogModel(events);
-const basket = new BasketModel(events)
-const user = new UserDataModel(events)
-const page = new Page(document.querySelector('.page'), events)
+const basket = new BasketModel(events);
+const user = new UserDataModel(events);
+
+const modal = new Popup(document.querySelector('.modal'), events);
+const page = new Page(document.querySelector('.page'), events);
+
+
 const cardTemp = document.querySelector('#card-catalog') as HTMLTemplateElement
 const cardPreviewTemp = document.querySelector('#card-preview') as HTMLTemplateElement
 const basketTemp = document.querySelector('#basket') as HTMLTemplateElement
 const cardInBasketTemp = document.querySelector('#card-basket') as HTMLTemplateElement
-const modal = new Popup(document.querySelector('.modal'), events);
 const orderTemp = document.querySelector('#order') as HTMLTemplateElement
-const orderPayment = new Payment(cloneTemplate(orderTemp), events)
 const contactsTemp = document.querySelector('#contacts') as HTMLTemplateElement
-const orderContacts = new Contacts(cloneTemplate(contactsTemp), events)
 const successTemp = document.querySelector('#success') as HTMLTemplateElement
+
+
+const orderPayment = new Payment(cloneTemplate(orderTemp), events)
+const orderContacts = new Contacts(cloneTemplate(contactsTemp), events)
 const orderSuccess = new Success(cloneTemplate(successTemp), events)
 
 
@@ -108,7 +115,7 @@ events.on('address:input', (data: { address: string}) => {
   orderPayment.valid = user.validate(['address', 'payment'])
 });
 
-events.on('order:change', (data: {payment: 'card' | 'cash', button: HTMLElement}) => {
+events.on('order:change', (data: {payment: TPaymentMethod, button: HTMLElement}) => {
   orderPayment.switchPayment(data.button)
   user.setOrderData({payment: data.payment})
   orderPayment.valid = user.validate(['address', 'payment'])
