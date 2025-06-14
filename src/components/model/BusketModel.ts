@@ -33,6 +33,7 @@ export class BasketModel {
 
   clearBasket() {
     this._items = [];
+    this._itemsId = []
   }
   getTotalEmount(): number {
     return this._items.length

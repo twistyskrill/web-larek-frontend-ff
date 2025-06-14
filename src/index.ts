@@ -139,15 +139,18 @@ events.on('contacts:submit', () => {
      total: basket.getTotalPrice(),
       items: basket.getItemsId()
  }
-  api.sendOrder(payload)
-    .then(() => user.resetOrder())
+  api.sendOrder(payload) 
     .then(() => {
+      basket.clearBasket();
+      page.counter = 0
+      user.resetOrder()
+      
+      orderContacts.clearContacts()
+      orderPayment.clearPayment()
       orderSuccess.total = payload.total; 
       modal.render({
           content: orderSuccess.render() 
       });
-      basket.clearBasket();
-      page.counter = 0
     })
     .catch(err => console.error(err))
 })
